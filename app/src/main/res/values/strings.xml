@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Ziffer</string>
+    <string name="label_correct">Correct!</string>
+    <string name="label_incorrect">Wrong :( It was %1$d</string>
+    <string name="label_totalScore">Total score: %s</string>
+    <string name="label_highScore">High score: %s</string>
+    <string name="label_start">Start</string>
+    <string name="label_stop">Stop</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="play_header">Play settings</string>
+
+    <!-- Play Preferences -->
+    <string name="speed_title">Reading speed</string>
+    <string name="time_title">Game time</string>
+    <string name="delay_title">Delay before new number</string>
+</resources>
