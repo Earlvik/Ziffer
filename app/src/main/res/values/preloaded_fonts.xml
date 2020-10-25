@@ -2,6 +2,5 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/neuton</item>
-        <item>@font/neuton_light</item>
     </array>
 </resources>
