@@ -13,8 +13,8 @@ import androidx.databinding.ObservableInt
 import androidx.preference.PreferenceManager
 import com.vikslop.ziffer.R
 import com.vikslop.ziffer.databinding.ActivityMainBinding
+import com.vikslop.ziffer.tts.Pronouncer
 import kotlinx.android.synthetic.main.activity_main.*
-import tts.Pronouncer
 import java.util.*
 import kotlin.random.Random
 
@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private var pronouncer: Pronouncer? = null
     private var currentNumber: Int? = null
-    private var totalScore = ObservableInt(0);
+    private var totalScore = ObservableInt(0)
     private var timer = Timer()
     private var countDownTimer: CountDownTimer? = null
 
@@ -75,8 +75,8 @@ class MainActivity : AppCompatActivity() {
         button_start.isEnabled = false
         button_stop.isEnabled = true
         number_input.visibility = View.VISIBLE
-        number_input.isFocusableInTouchMode = true;
-        number_input.isFocusable = true;
+        number_input.isFocusableInTouchMode = true
+        number_input.isFocusable = true
         answer_text.text = ""
         number_input.requestFocus()
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
         button_start.isEnabled = true
         button_stop.isEnabled = false
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(number_input.windowToken, 0);
+        inputMethodManager.hideSoftInputFromWindow(number_input.windowToken, 0)
         number_input.visibility = View.INVISIBLE
         answer_text.text = ""
         if (this.totalScore.get() > this.highScore.get()) {
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun pronounceRandom() {
         currentNumber = Random.nextInt(11, 99)
-        pronouncer?.pronounce(currentNumber!!, this.speed);
+        pronouncer?.pronounce(currentNumber!!, this.speed)
     }
 
     private fun checkInput(actionId: Int): Boolean {

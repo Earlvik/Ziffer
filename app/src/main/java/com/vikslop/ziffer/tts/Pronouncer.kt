@@ -1,4 +1,4 @@
-package tts
+package com.vikslop.ziffer.tts
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
