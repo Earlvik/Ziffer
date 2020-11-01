@@ -1,5 +1,7 @@
 package com.vikslop.ziffer.activity
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -23,19 +25,21 @@ class MainActivity : AppCompatActivity() {
 
     private var pronouncer: Pronouncer? = null
     private var currentNumber: Int? = null
+    private var previousNumber: Int? = null
     private var totalScore = ObservableInt(0)
     private var timer = Timer()
     private var countDownTimer: CountDownTimer? = null
+    private var remainingTime = 0L
 
-    private var time = 60.0f
+    private var totalTime = 60.0f
     private var delay = 0.5f
     private var speed = 1.0f
+    private var addOnCorrect = 1.0f
     private var highScore = ObservableInt(0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        pronouncer = Pronouncer(applicationContext)
         val binding: ActivityMainBinding = DataBindingUtil.setContentView(
             this,
             R.layout.activity_main
@@ -49,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        pronouncer = Pronouncer(applicationContext)
         button_start.setOnClickListener { v -> start() }
         button_stop.setOnClickListener { v -> stop() }
         button_settings.setOnClickListener { v ->
@@ -62,7 +67,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        timer.cancel()
+        stop()
         super.onPause()
     }
 
@@ -71,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         this.totalScore.set(0)
         setCountdown(1, 1)
         countdown_line.visibility = View.VISIBLE
-        this.countDownTimer = createCountDown()
+        this.countDownTimer = createCountDown((totalTime * 1000).toLong())
         button_start.isEnabled = false
         button_stop.isEnabled = true
         number_input.visibility = View.VISIBLE
@@ -107,29 +112,52 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun pronounceRandom() {
-        currentNumber = Random.nextInt(11, 99)
+        while (currentNumber == previousNumber) {
+            currentNumber = Random.nextInt(11, 99)
+        }
+        previousNumber = currentNumber;
         pronouncer?.pronounce(currentNumber!!, this.speed)
     }
 
     private fun checkInput(actionId: Int): Boolean {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
-            currentNumber?.let {
-                val input = number_input.text.toString().toInt()
-                if (input == currentNumber) {
-                    totalScore.set(totalScore.get() + 1)
-                    answer_text.setTextColor(Color.GREEN)
-                    answer_text.text = getString(R.string.label_correct)
-                } else {
-                    answer_text.setTextColor(Color.RED)
-                    answer_text.text = getString(R.string.label_incorrect, currentNumber)
+            val input = number_input.text.toString()
+            if (input.isNotEmpty()) {
+                currentNumber?.let {
+                    if (input.toInt() == currentNumber) {
+                        totalScore.set(totalScore.get() + 1)
+                        answer_text.setTextColor(Color.GREEN)
+                        answer_text.text = getString(R.string.label_correct)
+
+                        addOnCorrect_text.text = "+${addOnCorrect}"
+                        addOnCorrect_text.alpha = 1.0f
+                        addOnCorrect_text.visibility = View.VISIBLE
+                        addOnCorrect_text.animate()
+                            .alpha(0.0f)
+                            .setStartDelay(250)
+                            .setListener(object : AnimatorListenerAdapter() {
+                                override fun onAnimationEnd(animation: Animator) {
+                                    super.onAnimationEnd(animation);
+                                    addOnCorrect_text.visibility = View.INVISIBLE;
+                                }
+                            });
+
+                        countDownTimer?.cancel()
+                        countDownTimer =
+                            createCountDown(remainingTime + (addOnCorrect * 1000).toLong())
+                        countDownTimer?.start()
+                    } else {
+                        answer_text.setTextColor(Color.RED)
+                        answer_text.text = getString(R.string.label_incorrect, currentNumber)
+                    }
                 }
+                number_input.text.clear()
+                timer.schedule(object : TimerTask() {
+                    override fun run() {
+                        pronounceRandom()
+                    }
+                }, (this.delay * 1000).toLong())
             }
-            number_input.text.clear()
-            timer.schedule(object : TimerTask() {
-                override fun run() {
-                    pronounceRandom()
-                }
-            }, (this.delay * 1000).toLong())
         }
         return true
     }
@@ -138,11 +166,13 @@ class MainActivity : AppCompatActivity() {
         guideline_countdown.setGuidelinePercent(msLeft.toFloat() / msTotal.toFloat())
     }
 
-    private fun createCountDown(): CountDownTimer {
-        val totalMs = (this.time * 1000).toLong()
-        return object : CountDownTimer(totalMs, 100) {
+    private fun createCountDown(time: Long): CountDownTimer {
+        this.remainingTime = time
+        val maxTime = (totalTime * 1000).toLong()
+        return object : CountDownTimer(time, 100) {
             override fun onTick(millisUntilFinished: Long) {
-                runOnUiThread { setCountdown(totalMs, millisUntilFinished) }
+                remainingTime = millisUntilFinished
+                runOnUiThread { setCountdown(maxTime, millisUntilFinished) }
             }
 
             override fun onFinish() {
@@ -155,8 +185,9 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(applicationContext)
         this.highScore.set(sharedPreferences.getInt("highScore", 0))
-        this.time = sharedPreferences.getString("time", "60.0")!!.toFloat()
+        this.totalTime = sharedPreferences.getString("time", "60.0")!!.toFloat()
         this.delay = sharedPreferences.getString("delay", "0.5")!!.toFloat()
         this.speed = sharedPreferences.getString("speed", "1.0")!!.toFloat()
+        this.addOnCorrect = sharedPreferences.getString("addOnCorrect", "1.0")!!.toFloat()
     }
 }

@@ -38,6 +38,7 @@ class SettingsActivity : AppCompatActivity() {
             setToNumbersOnly("speed")
             setToNumbersOnly("delay")
             setToNumbersOnly("time")
+            setToNumbersOnly("addOnCorrect")
         }
 
         private fun setToNumbersOnly(key: String) {

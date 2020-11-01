@@ -21,6 +21,12 @@
             app:title="@string/delay_title"
             app:useSimpleSummaryProvider="true" />
 
+        <EditTextPreference
+            app:defaultValue="1.0"
+            app:key="addOnCorrect"
+            app:title="@string/addOnCorrect_title"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

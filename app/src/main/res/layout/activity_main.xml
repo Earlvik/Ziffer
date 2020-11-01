@@ -124,7 +124,7 @@
             android:id="@+id/score_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="24dp"
             android:text="@{String.format(@string/label_totalScore, String.valueOf(totalScore))}"
             app:layout_constraintBottom_toTopOf="@id/layout_buttons"
             app:layout_constraintEnd_toEndOf="parent"
@@ -140,6 +140,16 @@
             android:layout_marginTop="64dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/addOnCorrect_text"
+            android:visibility="invisible"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintBottom_toTopOf="@id/countdown_line"
+            app:layout_constraintEnd_toEndOf="@id/countdown_line"
+            android:layout_marginEnd="4dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

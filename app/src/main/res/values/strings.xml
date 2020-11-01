@@ -12,7 +12,8 @@
     <string name="play_header">Play settings</string>
 
     <!-- Play Preferences -->
-    <string name="speed_title">Reading speed</string>
-    <string name="time_title">Game time</string>
-    <string name="delay_title">Delay before new number</string>
+    <string name="speed_title">Reading speed (1.0 for normal)</string>
+    <string name="time_title">Game time (sec)</string>
+    <string name="delay_title">Delay before new number (sec)</string>
+    <string name="addOnCorrect_title">Add time on correct answer (sec)</string>
 </resources>
