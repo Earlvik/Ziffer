@@ -22,5 +22,3 @@ In thes setting you can change how long one game is, how fast the numbers are re
 ## Requirements
 
 * Android 5.0+
-* German Text-to-Speech enabled
-  * To enable it, go to Settings -> System -> Languages & Input -> Advanced -> Text-to-speech output -> Download the German language pack
